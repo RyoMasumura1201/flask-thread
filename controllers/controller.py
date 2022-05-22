@@ -2,6 +2,7 @@ from flask import Flask,make_response
 from tasks.parentThread import q,queueItemList
 from enum import Enum
 import random
+import multiprocessing
 
 app = Flask(__name__)
 
@@ -23,6 +24,7 @@ def cancel(jobId):
     # queueからitemを探し、ステータス更新
 
     # 実行中の場合は、processを削除
+    multiprocessing.active_children()[0].terminate()
     return make_response('キャンセルしました\n'), 202
 
 class queueItem:
