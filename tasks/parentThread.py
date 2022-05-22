@@ -3,6 +3,7 @@ import queue
 import time
 import datetime
 import multiprocessing
+from enum import Enum
 
 q = queue.Queue()
 queueItemList=[]
@@ -18,8 +19,7 @@ class ParentThread(threading.Thread):
             
             try:
                 itemInList = list(filter(lambda x: x.name == item.name, queueItemList))[0]
-                print(itemInList.status)
-                if itemInList.status == "PENDING":
+                if itemInList.status == Status.PENDING:
                     #[TODO] status更新
                     childP = childProcess(name=item.name)
                     childP.start()
@@ -44,5 +44,10 @@ class childProcess(multiprocessing.Process):
 
         finally:
             print('childThreadが完了しました')
-    
+
+class Status(Enum):
+    PENDING = "pending"
+    STARTED = "started"
+    FINISHED = "finished"
+    CANCELED = "canceled"
     
