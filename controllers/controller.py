@@ -1,11 +1,11 @@
 from flask import Flask,make_response
-from tasks.parentThread import q
+from tasks.parentThread import q,queueItemList
 from enum import Enum
 import random
 
 app = Flask(__name__)
 
-queueItemList=[]
+
 
 @app.route("/")
 def hello():
@@ -27,7 +27,7 @@ def cancel(jobId):
 
 class queueItem:
     def __init__(self):
-        self.name = 'item1'+ str(random.random())
+        self.name = 'item'+ str(random.random())
         self.status = status.PENDING
         
 class status(Enum):

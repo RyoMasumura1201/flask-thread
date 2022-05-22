@@ -1,4 +1,4 @@
-from controller import app
+from controllers.controller import app
 from tasks.parentThread import ParentThread
 
 
