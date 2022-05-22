@@ -1,8 +1,8 @@
 from controller import app
-from tasks.testThread import MyThread,q
+from tasks.parentThread import ParentThread
 
 
 if __name__ == "__main__":
-    t = MyThread()
+    t = ParentThread()
     t.start()
     app.run()

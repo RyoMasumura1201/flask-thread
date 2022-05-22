@@ -1,6 +1,6 @@
 from unicodedata import name
 from flask import Flask,make_response
-from tasks.testThread import q
+from tasks.parentThread import q
 app = Flask(__name__)
 
 jobs={}
