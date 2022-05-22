@@ -19,10 +19,11 @@ class ParentThread(threading.Thread):
             try:
                 itemInList = list(filter(lambda x: x.name == item.name, queueItemList))[0]
                 print(itemInList.status)
-
-                childP = childProcess(name=item.name)
-                childP.start()
-                childP.join()
+                if itemInList.status == "PENDING":
+                    #[TODO] status更新
+                    childP = childProcess(name=item.name)
+                    childP.start()
+                    childP.join()
 
             finally:
                 print('parent完了しました')
