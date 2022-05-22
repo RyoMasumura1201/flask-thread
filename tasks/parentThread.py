@@ -14,9 +14,10 @@ class ParentThread(threading.Thread):
         print("workerが立ち上がりました")
         while True:
             item = q.get()
+            print(item)
             
             try:
-                childP = childProcess(name="child1")
+                childP = childProcess(name=item.name)
                 childP.start()
 
             finally:
