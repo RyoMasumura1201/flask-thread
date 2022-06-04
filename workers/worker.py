@@ -6,36 +6,41 @@ import multiprocessing
 from enum import Enum
 
 q = queue.Queue()
-queueItemList=[]
 
 class ParentThread(threading.Thread):
     def __init__(self):
         super(ParentThread, self).__init__()
-    
+
     def run(self):
-        print("workerが立ち上がりました")
         while True:
             item = q.get()
-            
+
             try:
-                itemInList = list(filter(lambda x: x.name == item.name, queueItemList))[0]
-                if itemInList.status == Status.PENDING:
-                    #[TODO] status更新
+                from util.db_config import Task, db
+                task = Task.query.filter_by(id=item.id).first()
+                if task.status == Status.PENDING:
+                    task.status = Status.STARTED.value
+                    db.session.add(task)
+                    db.session.commit()
                     childP = childProcess(name=item.name)
                     childP.start()
                     childP.join()
 
+                    if task.status == Status.STARTED.value:
+                        task.status = Status.COMPLETED.value
+                        db.session.add(task)
+                        db.session.commit()
+
             finally:
-                print('parent完了しました')
                 q.task_done()
-                
+
 class childProcess(multiprocessing.Process):
     def __init__(self,name):
         super(childProcess, self).__init__()
         self.name = name
-    
+
+    # 処理内容
     def run(self):
-        print("childworkerが立ち上がりました")    
         try:
             print(f'{self.name}が開始しました')
             for i in range(30):
@@ -43,11 +48,10 @@ class childProcess(multiprocessing.Process):
                 time.sleep(1)
 
         finally:
-            print('childThreadが完了しました')
+            print(f'{self.name}が終了しました')
 
 class Status(Enum):
     PENDING = "pending"
     STARTED = "started"
     FINISHED = "finished"
     CANCELED = "canceled"
-    
